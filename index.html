@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cybersecurity QR Project</title>
+  <script defer data-domain="ece337cyberproject" src="https://plausible.io/js/script.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    .consent-box { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Cybersecurity Awareness Project</h1>
+  <p>By scanning this QR code, you're participating in a student-led cybersecurity project.</p>
+  <p>We collect basic technical data (device type, browser, IP address) for educational purposes only.</p>
+  <div class="consent-box">
+    <input type="checkbox" id="consent">
+    <label for="consent">I understand and consent to data collection.</label>
+  </div>
+  <br>
+  <button onclick="proceed()">Continue</button>
+
+  <script>
+    function proceed() {
+      const consent = document.getElementById('consent').checked;
+      if (consent) {
+        window.location.href = "https://example.com/thank-you"; // Replace with your next page or redirect
+      } else {
+        alert("Please provide consent to continue.");
+      }
+    }
+  </script>
+</body>
+</html>
