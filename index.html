@@ -21,14 +21,16 @@
   <button onclick="proceed()">Continue</button>
 
   <script>
-    function proceed() {
-      const consent = document.getElementById('consent').checked;
-      if (consent) {
-        window.location.href = "https://example.com/thank-you"; // Replace with your next page or redirect
-      } else {
-        alert("Please provide consent to continue.");
-      }
+  function proceed() {
+    const consent = document.getElementById('consent').checked;
+    if (consent) {
+      plausible('consent_given'); // 🔍 Custom event for analytics
+      window.location.href = "https://bradstephens.github.io/cyber-cr-project/thank-you.html";
+    } else {
+      alert("Please provide consent to continue.");
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
