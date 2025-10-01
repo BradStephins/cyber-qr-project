@@ -5,33 +5,46 @@
   <title>Cybersecurity QR Project</title>
   <script defer data-domain="ece337cyberproject" src="https://plausible.io/js/script.js"></script>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 50px; }
-    .consent-box { margin-top: 20px; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    .consent-box {
+      margin-top: 20px;
+    }
+    #errorMsg {
+      color: red;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Cybersecurity Awareness Project</h1>
   <p>By scanning this QR code, you're participating in a student-led cybersecurity project.</p>
   <p>We collect basic technical data (device type, browser, IP address) for educational purposes only.</p>
+
   <div class="consent-box">
     <input type="checkbox" id="consent">
     <label for="consent">I understand and consent to data collection.</label>
   </div>
+
   <br>
-  <button onclick="proceed()">Continue</button>
+  <button id="continueBtn">Continue</button>
+  <p id="errorMsg"></p>
 
   <script>
-  function proceed() {
-    const consent = document.getElementById('consent').checked;
-    if (consent) {
-      plausible('consent_given'); // 🔍 Custom event for analytics
-      window.location.href = "https://BradStephins.github.io/cyber-qr-project/thank-you.html";
-
-    } else {
-      alert("Please provide consent to continue.");
-    }
-  }
-</script>
-
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("continueBtn").addEventListener("click", function () {
+        const consent = document.getElementById('consent').checked;
+        if (consent) {
+          plausible('consent_given'); // 🔍 Custom event for analytics
+          window.location.href = "https://BradStephins.github.io/cyber-qr-project/thank-you.html";
+        } else {
+          document.getElementById("errorMsg").textContent = "Please check the box to continue.";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
