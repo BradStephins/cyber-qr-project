@@ -30,9 +30,10 @@
       font-size: 16px;
       cursor: pointer;
     }
-    #errorMsg {
-      color: red;
-      margin-top: 10px;
+    #thankYouMsg {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -46,9 +47,9 @@
   </p>
 
   <button id="consentBtn">Proceed (Data Will Be Collected)</button>
-  <p id="errorMsg"></p>
+  <p id="thankYouMsg"></p>
 
-  <!-- Hidden Form -->
+  <!-- Hidden Netlify Form -->
   <form name="device-data" method="POST" data-netlify="true" hidden>
     <input type="hidden" name="user_agent">
     <input type="hidden" name="browser">
@@ -94,10 +95,9 @@
       plausible("device-data-submitted");
       f.submit();
 
-      document.getElementById("errorMsg").textContent = "Thank you! Your data has been submitted.";
+      document.getElementById("thankYouMsg").textContent = "Thank you! Your data has been submitted.";
     });
   </script>
 
 </body>
 </html>
-
