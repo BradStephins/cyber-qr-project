@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Cybersecurity Awareness Project</title>
+  <title>Cybersecurity QR Project</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Plausible Analytics (optional) -->
   <script async src="https://plausible.io/js/pa-LFE95pZWwvSX5YAEZKjUU.js"></script>
   <script>
     window.plausible = window.plausible || function () {
@@ -16,7 +14,6 @@
     };
     plausible.init();
   </script>
-
   <style>
     body {
       font-family: sans-serif;
@@ -29,16 +26,6 @@
       padding: 12px 20px;
       font-size: 16px;
       cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      background-color: #2b6cb0;
-      color: white;
-    }
-    button:hover {
-      background-color: #2c5282;
-    }
-    .hidden {
-      display: none;
     }
   </style>
 </head>
@@ -46,18 +33,12 @@
 
   <h1>Cybersecurity Awareness Project</h1>
   <p>
-    By pressing the button below, you acknowledge that basic technical data (browser, OS, screen size, etc.)
-    will be collected for educational research purposes. No personal identity information (like name or email)
-    will be requested or stored.
+    By pressing the button below, you acknowledge that technical metadata will be collected for educational research purposes. No personal identity information will be requested or stored.
   </p>
 
   <button id="consentBtn">Proceed (Data Will Be Collected)</button>
 
-  <!-- Netlify Form (registered at build time) -->
-  <form name="device-data" netlify netlify-honeypot="bot-field" action="thank-you.html" hidden>
-    <p class="hidden">
-      <label>Don’t fill this out if you’re human: <input name="bot-field"></label>
-    </p>
+  <form name="device-data" method="POST" data-netlify="true" action="/thank-you.html" hidden>
     <input type="hidden" name="user_agent">
     <input type="hidden" name="browser">
     <input type="hidden" name="os">
@@ -65,6 +46,24 @@
     <input type="hidden" name="language">
     <input type="hidden" name="timezone">
     <input type="hidden" name="timestamp">
+    <input type="hidden" name="platform_type">
+    <input type="hidden" name="device_memory">
+    <input type="hidden" name="cpu_cores">
+    <input type="hidden" name="touch_support">
+    <input type="hidden" name="color_depth">
+    <input type="hidden" name="referrer">
+    <input type="hidden" name="screen_orientation">
+    <input type="hidden" name="connection_type">
+    <input type="hidden" name="cookies_enabled">
+    <input type="hidden" name="js_enabled">
+    <input type="hidden" name="online_status">
+    <input type="hidden" name="battery_charging">
+    <input type="hidden" name="battery_level">
+    <input type="hidden" name="do_not_track">
+    <input type="hidden" name="ip_address">
+    <input type="hidden" name="geo_lat">
+    <input type="hidden" name="geo_lon">
+    <input type="hidden" name="geo_accuracy">
   </form>
 
   <script>
@@ -85,7 +84,7 @@
       return "Unknown";
     }
 
-    document.getElementById("consentBtn").addEventListener("click", () => {
+    document.getElementById("consentBtn").addEventListener("click", async () => {
       plausible("consent_given");
 
       const f = document.forms["device-data"];
@@ -98,9 +97,61 @@
       f.language.value = navigator.language;
       f.timezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
       f.timestamp.value = new Date().toISOString();
+      f.platform_type.value = /Mobi|Android/i.test(ua) ? "Mobile" : "Desktop";
+      f.device_memory.value = navigator.deviceMemory || "Unknown";
+      f.cpu_cores.value = navigator.hardwareConcurrency || "Unknown";
+      f.touch_support.value = 'ontouchstart' in window ? "Yes" : "No";
+      f.color_depth.value = screen.colorDepth;
+      f.referrer.value = document.referrer || "Direct";
+      f.screen_orientation.value = screen.orientation?.type || "Unknown";
+      f.connection_type.value = navigator.connection?.effectiveType || "Unknown";
+      f.cookies_enabled.value = navigator.cookieEnabled ? "Yes" : "No";
+      f.js_enabled.value = "Yes";
+      f.online_status.value = navigator.onLine ? "Online" : "Offline";
+      f.do_not_track.value = navigator.doNotTrack || "Unknown";
 
-      plausible("device-data-submitted");
-      f.submit();
+      try {
+        const battery = await navigator.getBattery();
+        f.battery_charging.value = battery.charging ? "Yes" : "No";
+        f.battery_level.value = `${Math.round(battery.level * 100)}%`;
+      } catch {
+        f.battery_charging.value = "Unknown";
+        f.battery_level.value = "Unknown";
+      }
+
+      try {
+        const ipRes = await fetch("https://api64.ipify.org?format=json");
+        const ipData = await ipRes.json();
+        f.ip_address.value = ipData.ip || "Unknown";
+      } catch {
+        f.ip_address.value = "Unknown";
+      }
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            f.geo_lat.value = pos.coords.latitude.toFixed(6);
+            f.geo_lon.value = pos.coords.longitude.toFixed(6);
+            f.geo_accuracy.value = `${pos.coords.accuracy} meters`;
+            plausible("device-data-submitted");
+            f.submit();
+          },
+          () => {
+            f.geo_lat.value = "Denied";
+            f.geo_lon.value = "Denied";
+            f.geo_accuracy.value = "Denied";
+            plausible("device-data-submitted");
+            f.submit();
+          },
+          { enableHighAccuracy: true, timeout: 5000 }
+        );
+      } else {
+        f.geo_lat.value = "Unsupported";
+        f.geo_lon.value = "Unsupported";
+        f.geo_accuracy.value = "Unsupported";
+        plausible("device-data-submitted");
+        f.submit();
+      }
     });
   </script>
 
