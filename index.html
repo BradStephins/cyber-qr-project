@@ -30,11 +30,6 @@
       font-size: 16px;
       cursor: pointer;
     }
-    #thankYouMsg {
-      margin-top: 20px;
-      color: green;
-      font-weight: bold;
-    }
   </style>
 </head>
 <body>
@@ -47,10 +42,9 @@
   </p>
 
   <button id="consentBtn">Proceed (Data Will Be Collected)</button>
-  <p id="thankYouMsg"></p>
 
-  <!-- Hidden Netlify Form -->
-  <form name="device-data" method="POST" data-netlify="true" hidden>
+  <!-- Hidden Netlify Form with redirect -->
+  <form name="device-data" method="POST" data-netlify="true" action="/thank-you.html" hidden>
     <input type="hidden" name="user_agent">
     <input type="hidden" name="browser">
     <input type="hidden" name="os">
@@ -94,8 +88,6 @@
 
       plausible("device-data-submitted");
       f.submit();
-
-      document.getElementById("thankYouMsg").textContent = "Thank you! Your data has been submitted.";
     });
   </script>
 
