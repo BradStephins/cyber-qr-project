@@ -43,16 +43,17 @@
 
   <button id="consentBtn">Proceed (Data Will Be Collected)</button>
 
-  <!-- Hidden Netlify Form with redirect -->
-  <form name="device-data" method="POST" data-netlify="true" action="/thank-you.html" hidden>
-    <input type="hidden" name="user_agent">
-    <input type="hidden" name="browser">
-    <input type="hidden" name="os">
-    <input type="hidden" name="screen_size">
-    <input type="hidden" name="language">
-    <input type="hidden" name="timezone">
-    <input type="hidden" name="timestamp">
-  </form>
+ <!-- Hidden Netlify Form with redirect -->
+<form name="device-data" method="POST" data-netlify="true" action="/thank-you.html" hidden>
+  <input type="hidden" name="user_agent">
+  <input type="hidden" name="browser">
+  <input type="hidden" name="os">
+  <input type="hidden" name="screen_size">
+  <input type="hidden" name="language">
+  <input type="hidden" name="timezone">
+  <input type="hidden" name="timestamp">
+</form>
+
 
   <script>
     function parseBrowser(ua) {
