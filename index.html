@@ -20,11 +20,15 @@
   <style>
     body {
       font-family: sans-serif;
+      max-width: 650px;
+      margin: 60px auto;
+      line-height: 1.6;
       text-align: center;
-      padding: 50px;
     }
-    .consent-box {
-      margin-top: 20px;
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
     #errorMsg {
       color: red;
@@ -33,31 +37,67 @@
   </style>
 </head>
 <body>
+
   <h1>Cybersecurity Awareness Project</h1>
-  <p>By scanning this QR code, you're participating in a student-led cybersecurity project.</p>
-  <p>We collect basic technical data (device type, browser, IP address) for educational purposes only.</p>
+  <p>
+    By pressing the button below, you acknowledge that basic technical data (browser, OS, screen size, etc.)
+    will be collected for educational research purposes. No personal identity information (like name or email)
+    will be requested or stored.
+  </p>
 
-  <div class="consent-box">
-    <input type="checkbox" id="consent">
-    <label for="consent">I understand and consent to data collection.</label>
-  </div>
-
-  <br>
-  <button id="continueBtn">Continue</button>
+  <button id="consentBtn">Proceed (Data Will Be Collected)</button>
   <p id="errorMsg"></p>
 
+  <!-- Hidden Form -->
+  <form name="device-data" method="POST" data-netlify="true" hidden>
+    <input type="hidden" name="user_agent">
+    <input type="hidden" name="browser">
+    <input type="hidden" name="os">
+    <input type="hidden" name="screen_size">
+    <input type="hidden" name="language">
+    <input type="hidden" name="timezone">
+    <input type="hidden" name="timestamp">
+  </form>
+
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      document.getElementById("continueBtn").addEventListener("click", function () {
-        const consent = document.getElementById('consent').checked;
-        if (consent) {
-          plausible('consent_given'); // 🔍 Custom event for analytics
-          window.location.href = "https://BradStephins.github.io/cyber-qr-project/thank-you.html";
-        } else {
-          document.getElementById("errorMsg").textContent = "Please check the box to continue.";
-        }
-      });
+    function parseBrowser(ua) {
+      if (ua.includes("Firefox")) return "Firefox";
+      if (ua.includes("Edg")) return "Edge";
+      if (ua.includes("Chrome")) return "Chrome";
+      if (ua.includes("Safari")) return "Safari";
+      return "Unknown";
+    }
+
+    function parseOS(ua) {
+      if (ua.includes("Windows")) return "Windows";
+      if (ua.includes("Mac")) return "MacOS";
+      if (ua.includes("Linux")) return "Linux";
+      if (ua.includes("Android")) return "Android";
+      if (ua.includes("iPhone") || ua.includes("iPad")) return "iOS";
+      return "Unknown";
+    }
+
+    document.getElementById("consentBtn").addEventListener("click", () => {
+      plausible("consent_given");
+
+      const f = document.forms["device-data"];
+      const ua = navigator.userAgent;
+
+      f.user_agent.value = ua;
+      f.browser.value = parseBrowser(ua);
+      f.os.value = parseOS(ua);
+      f.screen_size.value = `${window.innerWidth}x${window.innerHeight}`;
+      f.language.value = navigator.language;
+      f.timezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      f.timestamp.value = new Date().toISOString();
+
+      plausible("device-data-submitted");
+      f.submit();
+
+      document.getElementById("errorMsg").textContent = "Thank you! Your data has been submitted.";
     });
   </script>
+
 </body>
 </html>
+
