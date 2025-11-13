@@ -96,7 +96,7 @@
       f.screen_size.value = `${window.innerWidth}x${window.innerHeight}`;
       f.language.value = navigator.language;
       f.timezone.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      f.timestamp.value = new Date().toISOString();
+      f.timestamp.value = new Date().toLocaleString();
       f.platform_type.value = /Mobi|Android/i.test(ua) ? "Mobile" : "Desktop";
       f.device_memory.value = navigator.deviceMemory || "Unknown";
       f.cpu_cores.value = navigator.hardwareConcurrency || "Unknown";
